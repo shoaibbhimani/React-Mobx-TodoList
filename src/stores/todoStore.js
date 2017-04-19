@@ -1,10 +1,10 @@
-import { extendObservable, action, toJS } from 'mobx';
+import { extendObservable, action } from 'mobx';
 import remotedev from 'mobx-remotedev/lib';
 
 class Todos {
   constructor(){
   	extendObservable(this,{
-	    todos: [{ name:"foo", completed:false},  ],
+	    todos: [{ name:"foo", completed:false}, { name:"bar", completed:true}],
 	    activeEditContent:null,
 	    editTodo:action((index) => {
 	      let todos = this.todos.slice();

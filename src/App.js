@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-
 import { observer, inject } from 'mobx-react'
-
 import EditTodo from './EditTodo.js';
 
 class App extends Component {
@@ -33,14 +30,34 @@ class App extends Component {
           </form>
          
           <ul className="list-group">
-          	{
-          		store.todostore.getTodos.map((todo, index) =>  <li className="list-group-item" onClick={() => store.todostore.completed(index) }key={index}>{todo.name} <button onClick={(e) =>{ e.stopPropagation(); store.todostore.removeTodo(index)}}>Remove </button>
-          		<button onClick={(e) =>{ e.stopPropagation(); store.todostore.editTodo(index)}}>Edit </button></li>)
-          }
+          	{store.todostore.getTodos.map((todo, index) => {
+			 return (
+			  <li
+			    className="list-group-item"
+				onClick={() => store.todostore.completed(index)}
+				key={index}>
+				  {todo.name}
+				<button onClick={(e) => {
+                  e.stopPropagation();
+                  store.todostore.removeTodo(index)
+                 }}>
+			      Remove
+				</button>
+				<button onClick={(e) => {
+                  e.stopPropagation();
+                  store.todostore.editTodo(index)
+                }}>
+				  Edit
+				</button>
+				</li>
+
+			)})}
           </ul>
           { store.todostore.completedTodos.length ?  <strong>Completed Todos </strong> : null  }
            <ul className="list-group">
-          	{store.todostore.completedTodos.map((todo, index) => <li className="list-group-item" key={index}>{todo.name}</li>)}
+          	{store.todostore.completedTodos.map((todo, index) => {
+			  return <li className="list-group-item" key={index}>{todo.name}</li>
+            })}
           </ul>
 
           <section>
