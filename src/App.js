@@ -34,6 +34,10 @@ class App extends Component {
 			 return (
 			  <li
 			    className="list-group-item"
+				style={ todo.completed ? {
+                  textDecoration: 'line-through',
+                  color: '#ccc'
+				}: null }
 				onClick={() => store.todostore.completed(index)}
 				key={index}>
 				  {todo.name}
