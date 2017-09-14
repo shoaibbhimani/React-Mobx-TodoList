@@ -1,38 +1,29 @@
-import { extendObservable, action } from 'mobx';
+import { extendObservable, action, observable } from 'mobx';
 import remotedev from 'mobx-remotedev/lib';
+import { delorean } from 'mobx-delorean';
 
 class Todos {
   constructor(){
   	extendObservable(this,{
 	    todos: [{ name:"foo", completed:false}, { name:"bar", completed:true}],
 	    activeEditContent:null,
-	    editTodo:action((index) => {
-	      let todos = this.todos.slice();
-	      todos[index].index = index;
-	      this.activeEditContent = Object.assign({},todos[index]);
-	    }),
-	    makeChange:action((newContentName) => {
-    	 //remove Previous content from todos
-    	 let todos = this.todos.slice();
-    	
-    	 //make new todo
-    	 let newContentObject = {};
-    	 newContentObject['name'] = newContentName;
-    	 newContentObject['completed'] = false;
-
-    	 todos[this.activeEditContent.index] = newContentObject;
-
-    	 this.todos = todos;
-    	 this.activeEditContent = null;
+	    editTodo:action(({ index, newName }) => {
+	    	this.todos = this.todos.map((todo, todoIndex) => {
+	    		return index === todoIndex ? {
+	    			...todo,
+	    			name:newName	
+	    		} : todo
+	    	})
 	    }),
 	    addTodo:action((name) => {
 	     if(!name){
 	     	alert("Please enter Something");
 	     	return;
 	      }
-	      let newTodo = {};
-	      newTodo.name = name;
-		    newTodo.completed = false;
+	      let newTodo = {
+	      	name,
+	      	completed:false
+	      };
 	      this.todos = this.todos.concat(newTodo)
 	    }),
 	    get getTodos() {
@@ -41,27 +32,34 @@ class Todos {
         get completedTodos(){
          return this.todos.filter((todo) => todo.completed)
         },
-	    removeTodo:action((index) => {
-	      let todos = this.todos.slice();
-	      todos.splice(index,1);
-	      this.todos = todos;
+	    removeTodo:action((index) => { 
+	       debugger	
+	      this.todos = this.todos.filter((todo, todoIndex) => {
+	      	return index !== todoIndex;
+	      });
 	    }),
 	    completed:action((index) => {
-	      let todos = this.todos.slice();
-	      todos[index].completed =  !todos[index].completed
-	      this.todos = todos;
+	      this.todos = this.todos.map((todo, todoIndex) => {
+	      	return todoIndex === index ? {
+	      		...todo,
+	      		completed:!todo.completed
+	      	} : todo
+	      });
 	    }),
 	    changeContent:action((index, content) => {
-	      let todos = this.todos.slice();
-	      todos[index].name =  content
-	      this.todos = todos;
+	      this.todos = this.todos = this.todos.map((todo, todoIndex) => {
+	      	return todoIndex === index ? {
+	      		...todo,
+	      		name:content
+	      	} : todo
+	      });
 	    })
    })
   }   
 }
 
 
-export default remotedev(new Todos());
+export default delorean(new Todos());
 
 export {
  Todos

@@ -1,28 +1,32 @@
 import { observer, inject } from 'mobx-react'
 import React, { Component } from 'react';
 class EditTodo extends Component {
+
+	editFormComplete = (e) => {
+		const { editForSubmit } = this.props;
+		e.preventDefault();
+		editForSubmit(this.refs.edittodo.value)
+		this.refs.edittodo.value = "";
+
+	}
+
 	render(){
-	  const { store } = this.props;
+	 const { todo, toggleIsEditing } = this.props;
 	  return (
-		<div className={store.todostore.activeEditContent ? 'active' : 'hide'} >
-		   <form onSubmit={(e) => {
-	          	 e.preventDefault();
-	          	 store.todostore.makeChange(this.refs.editContent.value);
-	          	 this.refs.editContent.value = "";
-	           }}>
+		<div>
+		   <form onSubmit={this.editFormComplete}>
 		    	<div className="input-group">
 		       	<input 
 		       	  type="text" 
-		       	  ref="editContent" 
-		       	  value={store.todostore.activeEditContent.name || ''}
+		       	  ref="edittodo" 
+		       	  defaultValue={todo.name}
 		       	  className="form-control" 
-		       	  onChange={() => store.todostore.activeEditContent.name = this.refs.editContent.value}
 		       	  placeholder="Search for..." />
 		    	  <span className="input-group-btn">
 		             <button 
 		               className="btn btn-default"
 		               type="submit">
-		               Edit Content
+		               Save 
 		             </button>	
 		          </span>
 			    </div>
@@ -33,4 +37,4 @@ class EditTodo extends Component {
 }
 
 
-export default inject(['store'])(observer(EditTodo)); 
+export default observer(EditTodo); 

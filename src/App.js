@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
 import { observer, inject } from 'mobx-react'
-import EditTodo from './EditTodo.js';
+import { DeloreanTools } from 'mobx-delorean';
+
+import TodoItem from "./TodoItem.js"
 
 class App extends Component {
   render() {
-    const { store } = this.props;
+    const { todostore } = this.props;
     return (
       <div className="col-sm-4 col-sm-offset-4">
           <form onSubmit={(e) => {
           	 e.preventDefault();
-          	 store.todostore.addTodo(this.refs.content.value);
+          	 todostore.addTodo(this.refs.content.value);
           	 this.refs.content.value = "";
            }}>
 	    	<div className="input-group">
@@ -28,45 +30,27 @@ class App extends Component {
 	          </span>
 		    </div>
           </form>
+
+          <DeloreanTools />
          
           <ul className="list-group">
-          	{store.todostore.getTodos.map((todo, index) => {
-			 return (
-			  <li
-			    className="list-group-item"
-				style={ todo.completed ? {
-                  textDecoration: 'line-through',
-                  color: '#ccc'
-				}: null }
-				onClick={() => store.todostore.completed(index)}
-				key={index}>
-				  {todo.name}
-				<button onClick={(e) => {
-                  e.stopPropagation();
-                  store.todostore.removeTodo(index)
-                 }}>
-			      Remove
-				</button>
-				<button onClick={(e) => {
-                  e.stopPropagation();
-                  store.todostore.editTodo(index)
-                }}>
-				  Edit
-				</button>
-				</li>
-
-			)})}
+          	{todostore.getTodos.map((todo, index) => {
+			      return  <TodoItem 
+                      key={index}
+                      index={index}
+                      completed={todostore.completed}
+                      removeTodo={todostore.removeTodo}
+                      editForSubmit={todostore.editTodo}
+                      todo={todo} />
+      })}
           </ul>
-          { store.todostore.completedTodos.length ?  <strong>Completed Todos </strong> : null  }
+          { todostore.completedTodos.length ?  <strong>Completed Todos </strong> : null  }
            <ul className="list-group">
-          	{store.todostore.completedTodos.map((todo, index) => {
-			  return <li className="list-group-item" key={index}>{todo.name}</li>
+          	{todostore.completedTodos.map((todo, index) => {
+			        return <li key={index} className="list-group-item">{todo.name}</li>
             })}
           </ul>
 
-          <section>
-          {store.todostore.activeEditContent ? <EditTodo  /> : null}
-          </section>
        </div>
     );
   }
@@ -75,4 +59,4 @@ class App extends Component {
 
 
 
-export default inject(['store'])(observer(App));
+export default inject('todostore')(observer(App));
