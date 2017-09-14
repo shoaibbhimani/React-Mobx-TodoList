@@ -50,10 +50,11 @@ class TodoItem extends React.Component {
 				style={ todo.completed ? {
                   textDecoration: 'line-through',
                   color: '#ccc'
+
 				}: null }
-				onClick={this.completed}
+				
 				>
-				  {todo.name}
+				  <div onClick={this.completed}>{todo.name}</div>
 				<button onClick={this.removeTodo}>
 			      Remove
 				</button>
