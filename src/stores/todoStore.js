@@ -33,7 +33,6 @@ class Todos {
          return this.todos.filter((todo) => todo.completed)
         },
 	    removeTodo:action((index) => { 
-	       debugger	
 	      this.todos = this.todos.filter((todo, todoIndex) => {
 	      	return index !== todoIndex;
 	      });
